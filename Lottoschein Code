@@ -1,0 +1,152 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+short getShort(char text[], short min, short max);       //sichere eingabe einer zahl vom typ short
+
+int main (void) {
+
+    // Aufgabe 1/2
+
+    printf ("Bitte geben sie 6 ganze Zahlen zwischen 1 und 49 für ihren Lottotipp ein. \n");
+    char text[] = "Zahl";
+    short min = 1;
+    short max = 49;
+    short ZahlenVomNutzer [6];                             
+    short aktuellerTip = 1;
+   
+    for (int i = 0; i < 6; i++) {
+        // printf("Sie tippen gerade Ihre %d ", aktuellerTip++);
+        short input;
+        int isValidInputNumber;
+
+        do {
+            isValidInputNumber = 0;
+            printf("Sie tippen gerade Ihre %d ", aktuellerTip);
+            input = getShort("Zahl: ", min, max);
+
+            int valueAlreadyExists = 0;
+
+            for (int j = 0; j < i; j++) {
+                if (ZahlenVomNutzer[j] == input) {
+                    // Make color red
+                    printf("\033[31m");
+                    // Print text in red
+                    printf("Die Zahl haben Sie bereits getippt. Bitte geben Sie eine andere Zahl ein\n");
+                    // Reset formatting
+                    printf("\033[0m");
+                    valueAlreadyExists = 1;
+                }
+            }
+
+            // if (valueAlreadyExists == 1)
+            // {
+            //     isValidInputNumber = 0;
+            // }
+            // else if (valueAlreadyExists == 0)
+            // {
+            //     isValidInputNumber = 1;
+            // }
+            //
+            // Is the same:
+            isValidInputNumber = !valueAlreadyExists;
+        } while (!isValidInputNumber);
+
+        aktuellerTip++;
+
+        ZahlenVomNutzer[i] = input;
+    }
+
+    
+    printf("\nIhre ausgewählten Zahlen für den Lottotipp: ");
+    for (int i = 0; i < 6; i++){
+        printf("%d ",ZahlenVomNutzer[i]);
+    }
+
+    //Zufäillge Zahlen generieren
+
+    srand(time(NULL));
+    //printf("%d %d\n", rand(), rand());
+
+    short ziehungLottozahlen[6];
+    for(int a = 0; a < 6; ++a) {
+        ziehungLottozahlen [a] = rand() %49 +1;
+    }
+    printf("\n\nGezogene Lotttozahlen: ");
+    for(int a= 0; a < 6; ++a) {
+        printf("%d ", ziehungLottozahlen[a]);
+    }
+
+
+    //Vergleichen Lottozahlen getippt und gezogen
+    short AnzahlRichtige = 0;
+    for (int a = 0; a < 6; ++a){
+        for (int i=0; i<6;i++) {
+            if (ziehungLottozahlen[a] == ZahlenVomNutzer[i]){
+                ++AnzahlRichtige;
+                break;
+            }
+        }
+    }
+    printf("\n\n");
+    printf("Anzahl Richtige: %d \n", AnzahlRichtige);
+
+
+    if (AnzahlRichtige == 2){
+        printf("Ihr Gewinn liegt bei 5 Euro");
+        }
+    else if (AnzahlRichtige == 3){
+        printf("Ihr Gewinn liegt bei 50 Euro");
+        }
+     else if (AnzahlRichtige == 4){
+        printf("Ihr Gewinn liegt bei 1000 Euro");
+
+        }
+     else if (AnzahlRichtige == 5){
+        printf("Ihr Gewinn liegt bei 50.000 Euro");
+
+        }
+    else if (AnzahlRichtige == 6){
+        printf("JACKPOTT !!! \nIhr Gewinn liegt bei 1.000.000 Euro");
+         }
+    else if (AnzahlRichtige <2){
+        printf("Leider kein Gewinn");
+    }
+
+    return 0;
+
+}
+
+short getShort(
+    char text[],short min, short max) // [in] question text for user input
+{
+    short value; // user input
+    int finished = 0; // flag for correct user input
+    char ch; // character behind number
+    int retVal; // return value of scanf
+
+    do {       
+            // get user input
+        printf("%s: ", text);
+        ch = '\0';
+        retVal = scanf("%hd%c", &value, &ch);
+        // check for valid user input
+        if (retVal != 2) printf("Das war keine korrekte Zahl!\n");
+        else if (ch != '\n') printf("Unerwartete Zeichen hinter der Zahl!\n");
+        else if(value < min || value > max) printf("Der gültige zahlenbereich ist überschritten\n");
+        else finished = 1;
+
+        // clear input stream
+        while (ch != '\n') scanf("%c", &ch);
+
+
+// repeat if not finished
+} while (!finished);
+
+// return user input
+return value;
+}
+
+
+
